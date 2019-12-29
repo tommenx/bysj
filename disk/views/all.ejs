@@ -1,0 +1,187 @@
+<% children.forEach(function (value) { %>
+<li class="list-group-item file-group" data-id="<%= value.F_ID %>" title="<%= value.F_LocalName%>" data-url="<%= value.F_SourceUrl%>" data-type="<%= value.F_TypeID%>">
+    <div class="item-inner">
+        <div class="item-tit">
+            <div class="thumb">
+                <span class="fa fa-square-o fa-2x check-item" data-id="<%= value.F_ID %>"></span>
+            </div>
+            <div class="thumb">
+                <% if(value.F_TypeID == 1){ %>
+                <span class="fa fa-folder fa-2x"></span>
+                <% }else if(value.F_TypeID == 2){ %>
+                <span class="fa fa-image fa-2x"></span>
+                <% }else if(value.F_TypeID == 3){ %>
+                <span class="fa fa-video-camera fa-2x"></span>
+                <% }else if(value.F_TypeID == 4){ %>
+                <span class="fa fa-music fa-2x"></span>
+                <% }else if(value.F_TypeID == 5){ %>
+                <span class="fa fa-file-text fa-2x"></span>
+                <% }else if(value.F_TypeID == 6){ %>
+                <span class="fa fa-cloud-download fa-2x"></span>
+                <% }else{ %>
+                <span class="fa fa-file fa-2x"></span>
+                <% } %>
+            </div>
+            <div class="info">
+                <% if(value.F_TypeID != 1){%>
+                    <a class='preview' href="#" data-url="<%= value.F_SourceUrl%>" title="<%= value.F_LocalName %>"><%= value.F_ShowName %></a>
+                <% }else{ %>
+                    <a class="nav-to" href="#" data-id="<%= value.F_ID%>" title="<%= value.F_LocalName%>"><%= value.F_ShowName %> </a>
+                <% } %>
+            </div>
+        </div>
+        <div class="item-info">
+            <div class="item-info-list">
+                <span class="txt txt-time"><%= value.F_CreateTime %></span>
+            </div>
+            <div class="item-info-list">
+                <span class="txt txt-size"><%= value.F_Size %></span>
+            </div>
+        </div>
+    </div>
+</li>
+<% }) %>
+
+<script>
+    var rename_id;
+    var rename_name;
+    $('#updateAlert').hide();
+    $('.nav-to').click(function () {
+        var id = $(this).attr('data-id');
+        var name = $(this).attr('title');
+        console.log(id);
+        openFolder(id,name);
+    });
+
+    $('.preview').click(function () {
+        var fileurl = $(this).attr('data-url');
+        preview(fileurl);
+    })
+
+    $('#bread li').click(function () {
+        var curDeep = $(this).attr('data-deep');
+        var id = $(this).attr('data-id');
+        // console.log(curDeep);
+        $.ajax({
+            type: 'POST',
+            url: '/files/all',
+            data:{
+                pid:id
+            },
+            success: function (res) {
+                $('#list_group').html(res);
+                removeBreadCrumb(curDeep);
+            }
+        });
+
+        // getallChildren();
+    });
+
+
+    $('.check-item').click(function () {
+        $(this).toggleClass('fa-square-o fa-check-square-o');
+    });
+
+    /**
+     * 设置当前右键点击元素下的checkbox为checkd状态，为后续重命名操作
+     */
+    $('.file-group').mousedown(function (e) {
+        if(e.which == 3){
+            $(this).find('.check-item').toggleClass('fa-square-o fa-check-square-o');
+        }
+    });
+
+    $(".file-group").contextMenu({
+        menu: [{
+            text: "打开",
+            callback: function() {
+                var id = $('.fa-check-square-o').attr('data-id');
+                var name = $('.fa-check-square-o').parents('.file-group').attr('title');
+                var type = $('.fa-check-square-o').parents('.file-group').attr('data-type');
+                var fileurl = $('.fa-check-square-o').parents('.file-group').attr('data-url');
+                //如果是文件夹
+                if(parseInt(type)==1){
+                    openFolder(id,name);
+                }
+                else{
+                    preview(fileurl);
+                }
+            }
+        },
+            {
+                text: "下载",
+                callback: function() {
+                    // var id = $('.fa-check-square-o').attr('data-id');
+                    // var name = $('.fa-check-square-o').parents('.file-group').attr('title');
+                    var type = $('.fa-check-square-o').parents('.file-group').attr('data-type');
+                    var fileurl = $('.fa-check-square-o').parents('.file-group').attr('data-url');
+                    if(parseInt(type)==1){
+
+                        alertmsg('暂不支持文件夹下载');
+                    }
+                    else{
+                        window.location.href=fileurl;
+                    }
+                }
+            },
+            {
+                text: "重命名",
+                callback: function() {
+                    rename_id = $('.fa-check-square-o').attr('data-id');
+                    var name = $('.fa-check-square-o').parents('.file-group').attr('title');
+                    $('#newName').val(name);
+                    $('#reName').modal({show:true});
+
+                }
+            },
+            {
+                text: "删除",
+                callback: function() {
+                    var delete_id =  $('.fa-check-square-o').attr('data-id');
+                    var checked = new Array();
+                    checked.push(delete_id);
+                    $.ajax({
+                        type:'POST',
+                        url:'/files/delete',
+                        dataType:'json',
+                        data:{
+                            files:checked.join(',')
+                        },
+                        success:function (res) {
+                            console.log(res);
+                            getallChildren();
+                            alertmsg('删除成功')
+                        }
+
+                    })
+                }
+            }
+        ]
+    });
+
+    $('#sureReName').click(function () {
+        rename_name = $('#newName').val();
+        $.ajax({
+            type:'POST',
+            url:"files/rename",
+            dataType:'json',
+            data:{
+                id:rename_id,
+                name:rename_name
+            },
+            success:function (res) {
+                if(res.code == 0){
+                    $('#updateAlert').show();
+                }
+                else{
+                    $('#reName').modal('hide');
+                    getallChildren();
+                    alertmsg('重命名成功');
+                }
+            }
+        });
+    })
+
+
+
+</script>

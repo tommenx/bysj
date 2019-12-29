@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>搜索</title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+
+</head>
+
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="index.html" class="navbar-brand"></a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a class="active" href="/">磁盘</a>
+            </li>
+            <li>
+                <a href="/search">搜索</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container container-small">
+    <div class="input-group">
+        <input type="text" class="form-control" id="key-text">
+        <span class="input-group-btn">
+            <button class="btn btn-primary" type="button" id="search-btn">搜索</button>
+        </span>
+    </div>
+</div>
+<div class="container">
+    <div class="num-of-res">
+        共搜到5条结果,耗时00001秒
+    </div>
+    <div class="file-list" id="search-res">
+        <!--<div class="file-list-item">-->
+            <!--<table style="width:100%">-->
+                <!--<tr>-->
+                    <!--<div class="file-heading">-->
+                        <!--<td style="width:8%">-->
+                            <!--<div class="thumb">-->
+                                <!--<span class="fa  fa-file-word-o fa-3x"></span>-->
+                            <!--</div>-->
+                        <!--</td>-->
+                        <!--<td style="width:72%">-->
+                            <!--<div class="file-title">计算机网络实验报告</div>-->
+                        <!--</td>-->
+                        <!--<td>-->
+                            <!--<span class="file-download"><a>点击下载</a></span>-->
+                        <!--</td>-->
+                    <!--</div>-->
+                <!--</tr>-->
+                <!--<tr >-->
+                    <!--<td colspan="3">-->
+                        <!--<div class="file-content">-->
+                            <!--下阶段需要抓紧时间，加快进度，尽快完成系统开发。注意收集和整理资料，-->
+                            <!--为论文写作作准备。指导<strong style="color: #c9302c">教师</strong>签字：2017年4月30日-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</div>-->
+    </div>
+</div>
+</body>
+</html>
+
+<script src="javascripts/jquery-3.3.1.min.js"></script>
+<script src="javascripts/bootstrap.min.js"></script>
+<script src="javascripts/util.js"></script>
+
+<script>
+    $('#search-btn').click(function () {
+        var key = $('#key-text').val();
+        // console.log('kkkkkety',key);
+        getSearch(key);
+    })
+
+</script>

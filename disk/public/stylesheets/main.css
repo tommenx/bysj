@@ -1,0 +1,225 @@
+a:hover {
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  width: 100%;
+  border-radius: 3px;
+}
+
+.navbar {
+  border-radius: 0;
+}
+
+.navbar-brand {
+  width: 270px;
+  background-image: url(../images/VDSK.png);
+  background-repeat: no-repeat;
+  background-size: 60%;
+  background-position: center center;
+}
+.side-bar .list-group-item {
+  border:0;
+  border-radius: 2px;
+}
+
+.list-group-item.active {
+  background: #ea0c3c;
+}
+.list-group-item.active:hover {
+  background: #ea0c3c;
+}
+
+.panel-menu {
+	padding: 0;
+	margin-left: 20px;
+}
+.panel-no-border {
+	border: 0px;
+}
+.breadcrumb {
+	margin-top: 15px;
+	margin-bottom: 0px;
+	background-color: #FFF;
+}
+.breadcrumb span{
+	cursor: pointer;
+}
+.list-group-item.file-group{
+	border: 0;
+}
+.list-group-item.file-group:hover,.list-group-tit:hover{
+	background-color: rgba(0,0,0,0.1);
+}
+.list-group-hd{
+	height: 40px;
+	line-height: 40px;
+	padding-right:16px;
+}
+.list-group-tit {
+	float: left;
+	color: #777;
+	cursor: pointer;
+}
+
+.list-group-tit.name {
+	width: 50%;
+	padding-left: 40px;
+}
+.list-group-tit.time {
+	width: 25%;
+}
+.list-group-tit.size {
+	width: 25%;
+}
+.tit-con{
+	text-indent: 10px;
+}
+.file-group {
+	padding: 0px 0px;
+}
+.item-inner{
+	height: 56px;
+	line-height: 56px;
+}
+.item-tit{
+	width: 50%;
+	float: left;
+}
+.item-tit .label {
+	width: 40px;
+	height: 40px;
+	margin: 8px 15px 0 0;
+	float: left;
+	text-align: center;
+}
+.item-tit .thumb {
+	width: 40px;
+	height: 40px;
+	margin: 8px 15px 0 0;
+	float: left;
+	text-align: center;
+}
+.item-info{
+	float: right;
+	width: 50%;
+	color: #777;
+	height: 100%;
+}
+.item-info-list {
+	float: left;
+	width: 50%;
+}
+
+.footer {
+  margin-top: 20px;
+  padding: 30px 0px;
+  color: #999;
+  text-align: center;
+}
+
+.form-container  {
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.btn-primary {
+  background-color: #ea0c3c;
+  border-color: #ea0c3c;
+}
+
+.up-list .name {
+	width: 30%;
+}
+.up-list .size {
+	width: 20%;
+}
+.up-list .pro {
+	width: 40%;
+}
+.up-list .op {
+	width: 10%;
+}
+.footer {
+  margin-top: 20px;
+  padding: 50px 0;
+  text-align: center;
+  color: #999;
+}
+
+.container-small {
+  max-width: 500px;
+}
+
+.box {
+	margin:10px 10px;
+	float: left;
+	width: 200px;
+}
+.box img {
+	max-width: 100%
+}
+.up-list {
+    border-bottom: 1px #999999 solid;
+}
+.up-list:hover{
+    background-color: rgba(0,0,0,0.1);
+}
+.table-responsive.hide {
+    display: none;
+}
+
+.dropbox {
+    width: 600px;
+    height: 300px;
+    margin: 20px auto;
+    border: 3px dashed #E6E6E6;
+}
+.container.dropbox.hide {
+    display: none;
+}
+.uoload-tip{
+    text-align: center;
+    margin-top: 100px;
+}
+
+.btn-primary:hover,
+.btn-primary.focus,
+.btn-primary:focus,
+.btn-primary.active, .btn-primary:active, .open>.dropdown-toggle.btn-primary,
+.btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover, .open>.dropdown-toggle.btn-primary.focus, .open>.dropdown-toggle.btn-primary:focus, .open>.dropdown-toggle.btn-primary:hover {
+  background-color: #d00e38;
+  border-color: #d00e38;
+}
+
+.input-group{
+    margin-top: 10%;
+}
+
+.search-hd{
+    padding: 0 auto;
+}
+.file-list-item{
+    border-bottom: 1px solid #e5e5e5;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.file-list-item .thumb {
+    float: left;
+}
+.file-list{
+    width: 80%;
+}
+.file-title{
+    float: left;
+    font-size: 18px;
+    font-weight: bold;
+    color: #444;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+.file-content{
+    float: left;
+    padding-left: 60px;
+}

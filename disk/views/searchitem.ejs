@@ -1,0 +1,26 @@
+<% items.forEach(function (value) { %>
+<div class="file-list-item">
+    <table style="width:100%">
+        <tr>
+            <div class="file-heading">
+                <td style="width:8%">
+                    <div class="thumb">
+                        <span class="fa fa-file-text-o fa-3x"></span>
+                    </div>
+                </td>
+                <td style="width:72%">
+                    <div class="file-title"><%- value.title%></div>
+                </td>
+                <td>
+                    <span class="file-download"><a href="<%= value.downloadUrl %>">点击下载</a></span>
+                </td>
+            </div>
+        </tr>
+        <tr >
+            <td colspan="3">
+                <div class="file-content"><%- value.hit %></div>
+            </td>
+        </tr>
+    </table>
+</div>
+<% }) %>

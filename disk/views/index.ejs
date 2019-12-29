@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VDSK</title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+    <link rel="stylesheet" href="/stylesheets/contextMenu.css">
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="/" class="navbar-brand"></a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li>
+                <a class="active" href="/">磁盘</a>
+            </li>
+            <li>
+                <a href="/search">搜索</a>
+            </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">用户名</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="col-sm-2">
+        <div class="list-group side-bar">
+            <a class="list-group-item active" href="/">全部文件</a>
+            <a class="list-group-item" href="/img">图片</a>
+            <a class="list-group-item" href="/doc">文档</a>
+            <a class="list-group-item" href="/video">视频</a>
+            <a class="list-group-item" href="/torrent">种子</a>
+            <a class="list-group-item" href="/music">音乐</a>
+        </div>
+    </div>
+    <div class="col-xs-10">
+        <div class="alert alert-info" id="index-alert" role="alert"></div>
+        <div class="panel panel-default panel-no-border">
+            <div class="panel-body panel-menu">
+                <div class="btn-group">
+                    <button class="btn btn-default" data-toggle="modal" data-target="#upFileModal">上传文件</button>
+                    <button class="btn btn-default">上传文件夹</button>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#addDir">新建文件夹</button>
+                    <button id="sureDeleteFile" class="btn btn-default" data-toggle="modal" data-target="#deleteFile">批量删除文件</button>
+                </div>
+                <!--面包屑区域-->
+                <ol class="breadcrumb" id="bread">
+                    <!--<li><span>全部</span></li>-->
+                    <!--<li><span>S01</span></li>-->
+                    <!--<li class="active"><span>E02</span></li>-->
+                </ol>
+            </div>
+        </div>
+        <div class="main-bd">
+            <div class="list-group">
+                <div class="list-group-hd">
+                    <div class="list-group-tit-wrap">
+                        <div class="list-group-tit name">
+                            <span class="tit-con">名称</span>
+                        </div>
+                        <div class="list-group-tit time">
+                            <span class="tit-con">上次修改时间</span>
+                        </div>
+                        <div class="list-group-tit size">
+                            <span class="tit-con">大小</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-bd">
+                    <!--文件列表-->
+                    <ul class="list-group" id="list_group">
+                        <!--<li class="list-group-item file-group">-->
+                            <!--<div class="item-inner">-->
+                                <!--<div class="item-tit">-->
+                                    <!--<div class="thumb">-->
+                                        <!--<span class="fa fa-square-o fa-2x"></span>-->
+                                    <!--</div>-->
+                                    <!--<div class="thumb">-->
+                                        <!--<span class="fa fa-file fa-2x"></span>-->
+                                    <!--</div>-->
+                                    <!--<div class="info">-->
+                                        <!--<a href="#">文件夹1</a>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                                <!--<div class="item-info">-->
+                                    <!--<div class="item-info-list">-->
+                                        <!--<span class="txt txt-time">2017年10月2日</span>-->
+                                    <!--</div>-->
+                                    <!--<div class="item-info-list">-->
+                                        <!--<span class="txt txt-size">513MB</span>-->
+                                    <!--</div>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="upFileModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="width:900px; height:600px;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">上传文件</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info" role="alert">你可以选择文件，也可以拖拽文件至下面的区域</div>
+                <form id='upForm'>
+                    <input type="file" name="js-file" id="js-file" style="display: none;"/>
+                </form>
+                <div class="uoload-path">
+                    <span class="choose-file">
+                        <a id="upLoadFile" class="btn btn-default" href="javascript:void(0);">选择文件</a>
+                    </span>
+                </div>
+
+                <!--START 拖拽窗口-->
+                <div class="container dropbox " id="dropbox">
+                    <div class="uoload-tip">
+                        <p>未选择文件</p>
+                        <p>将文件拖拽至此区域上传</p>
+                    </div>
+                </div>
+                <!--END 拖拽窗口-->
+
+                <!--START 上传文件列表-->
+                <div class="table-responsive hide" id='uploadTable'>
+                    <div class="table-head">
+                        <table class="table table-striped">
+                            <thead class="up-list">
+                            <tr>
+                                <th class="name"><span>文件</span></th>
+                                <th class="size"><span>大小</span></th>
+                                <th class="pro"><span>进度</span></th>
+                                <th class="op"><span>操作</span></th>
+                            </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="table-body">
+                        <table class="table table-uoload-list" id="table-upload-list">
+                            <!--上传文件列表项-->
+                            <tr class="up-list" style="display: none">
+                                <td class="name"><span>xxx.zip</span></td>
+                                <td class="size"><span>513MB</span></td>
+                                <td class="pro">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" aria-valuenow="60"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
+                                            60%
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="op">
+                                    <span class="upload-status">正在上传</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!--END 上传文件列表-->
+            </div>
+            <div class="modal-footer">
+                <button id="completeUpload" type="button" class="btn btn-primary" >提交更改</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+<div class="modal fade" id="addDir" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">新建文件夹</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="folderAlert" role="alert">文件夹已存在</div>
+                <div class="input-group">
+                    <span class="input-group-addon">*请输入名称</span>
+                    <input id="newFolder" type="text" class="form-control" placeholder="请输入文件夹名">
+                </div>
+                <div>
+                    <span>注：最多支持 20 个字符</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="addFolder" type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+<div class="modal fade" id="deleteFile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">删除文件</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="FileDeleteAlter" role="alert">确定删除这些文件</div>
+            </div>
+            <div class="modal-footer">
+                <button id="sureToDelete" type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+<div class="modal fade" id="reName" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">重命名</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger" id="updateAlert" role="alert">文件名已存在</div>
+                <div class="input-group">
+                    <span class="input-group-addon">*请输入名称</span>
+                    <input id="newName" type="text" class="form-control" placeholder="请输入文件名">
+                </div>
+                <div>
+                    <span>注：最多支持 20 个字符</span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="sureReName" type="button" class="btn btn-primary">确定</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+
+</body>
+</html>
+<script src="javascripts/jquery-3.3.1.min.js"></script>
+<script src="javascripts/bootstrap.min.js"></script>
+<script src="javascripts/spark-md5.js"></script>
+<script src="javascripts/util.js"></script>
+<script src="javascripts/cos-js-sdk-v4.js"></script>
+<script src="javascripts/crypto.js"></script>
+<script src="http://7jpri5.com1.z0.glb.clouddn.com/contextMenu.js"></script>
+
+<script>
+    //刚进入就载入文件内容
+    $(function () {
+        $('#index-alert').hide();
+        // alert('进入');
+        getallChildren();
+        setInitalBread();
+    });
+
+
+    //TODO 以下几个值请确保填上再调用示例里的sdk方法
+    //具体可以到https://console.qcloud.com/cos 进行查看
+    var bucket = 'test';
+    var appid = '1255584620';
+    var sid = 'AKIDRkrniTQZEm8LPHPWpAMQJ3byDJF0mSGs';
+    var skey = 'YxXyH4gXK2b1GOLDyc6RegXCh074pSZs';
+    var region = 'sh';
+    //TODO 以上几个值请确保填上再调用示例里的sdk方法
+
+    var myFolder = '/';//需要操作的目录
+    var tmd5 = '';
+    var tlocalName = '';
+    var tremoteName = '';
+    var tsize = -1;
+    var ttypeId = -1;
+    var tguid = '';
+    var checked;
+    var path = "";
+
+    //初始化逻辑
+    //特别注意: JS-SDK使用之前请先到console.qcloud.com/cos 对相应的Bucket进行跨域设置
+    var cos = new CosCloud({
+        appid: appid, // APPID 必填参数
+        bucket: bucket, // bucketName 必填参数
+        region: region, // 地域信息 必填参数 华南地区填gz 华东填sh 华北填tj
+        getAppSign: function (callback) {//获取签名 必填参数
+
+            // 方法一（推荐线上使用）：搭建鉴权服务器，构造请求参数获取签名，推荐实际线上业务使用，优点是安全性好，不会暴露自己的私钥
+            // $.get('../server/auth.php', callback);
+
+            // 方法二（前端调试使用）：直接在浏览器前端计算签名，需要获取自己的accessKey和secretKey, 一般在调试阶段使用
+            var self = this;
+            var random = parseInt(Math.random() * Math.pow(2, 32));
+            var now = parseInt(Date.now() / 1000);
+            var e = now + 600; //签名过期时间为当前+600s
+            var path = ''; //多次签名这里填空
+            var str = 'a=' + self.appid + '&k=' + sid + '&e=' + e + '&t=' + now + '&r=' + random + '&f=' + path + '&b=' + self.bucket;
+            var sha1Res = CryptoJS.HmacSHA1(str, skey); // 这里使用CryptoJS计算sha1值，你也可以用其他开源库或自己实现
+            var strWordArray = CryptoJS.enc.Utf8.parse(str);
+            var resWordArray = sha1Res.concat(strWordArray);
+            var res = resWordArray.toString(CryptoJS.enc.Base64);
+
+            callback(res);
+
+        },
+        getAppSignOnce: function (callback) {//单次签名，参考上面的注释即可
+
+            // 方法一（推荐线上使用）：搭建鉴权服务器，构造请求参数获取签名，推荐实际线上业务使用，优点是安全性好，不会暴露自己的私钥
+            // $.get('../server/auth.php', {path: self.path}, callback);
+
+            // 方法二（前端调试使用）：直接在浏览器前端计算签名，需要获取自己的accessKey和secretKey, 一般在调试阶段使用
+            var self = this;
+            var random = parseInt(Math.random() * Math.pow(2, 32));
+            var now = parseInt(Date.now() / 1000);
+            var e = 0; // 单次签名 expire==0
+            var path = self.path;
+            var str = 'a=' + self.appid + '&k=' + sid + '&e=' + e + '&t=' + now + '&r=' + random + '&f=' + path + '&b=' + self.bucket;
+            var sha1Res = CryptoJS.HmacSHA1(str, skey);
+            // 这里使用CryptoJS计算sha1值，你也可以用其他开源库或自己实现
+            console.log(sha1Res);
+            var strWordArray = CryptoJS.enc.Utf8.parse(str);
+            var resWordArray = sha1Res.concat(strWordArray);
+            var res = resWordArray.toString(CryptoJS.enc.Base64);
+
+            callback(res);
+
+        }
+    });
+
+    var successCallBack = function (result) {
+        console.log('request success.');
+        // $("#result").val(JSON.stringify(result));
+        // $("#downloadFile").attr('href', result.data.source_url);
+        // console.log("access_url: " + result.data.source_url);
+        console.log("successCallBack" + result);
+        // console.log("!!!!!!!!!!!!!!!!");
+        // console.log(path);
+        // 成功后发送至后台并数据库中
+        $.ajax({
+            type: 'POST',
+            url: '/upload',
+            dataType: 'json',
+            data: {
+                typeID: ttypeId,
+                md5: tmd5,
+                guid: tguid,
+                accessUrl: result.data.access_url,
+                sourceUrl: result.data.source_url,
+                localName: tlocalName,
+                remoteName: tremoteName,
+                size: tsize,
+                isDir: 0
+            },
+            success: function (res) {
+                var status = $('#table-upload-list tr:last .upload-status');
+                status.html('上传成功')
+            }
+        });
+
+    };
+
+    var errorCallBack = function (result) {
+        result = result || {};
+        console.log('request error:', result && result.message);
+        $("#result").val(result.responseText || 'error');
+    };
+
+    var progressCallBack = function (curr, sha1) {
+        var sha1CheckProgress = ((sha1 * 100).toFixed(2) || 100) + '%';
+        var uploadProgress = ((curr || 0) * 100).toFixed(2) + '%';
+        var msg = 'upload progress:' + uploadProgress + '; sha1 check:' + sha1CheckProgress + '.';
+        console.log(msg);
+        console.log(curr * 100);
+        var progress_show = ((curr || 0) * 100).toFixed(2);
+        var progress = $('#table-upload-list tr:last .progress-bar');
+        progress.css('width', progress_show + '%').text(progress_show + '%');
+    };
+
+    var lastTaskId;
+    var taskReady = function (taskId) {
+        lastTaskId = taskId;
+    };
+
+
+    // 添加文件夹确定
+    $('#folderAlert').hide();
+    $('#addFolder').click(function () {
+        var name = $('#newFolder').val();
+        $.ajax({
+            type: 'POST',
+            url: '/folder/create',
+            dataType: 'json',
+            data: {
+                name: name
+            },
+            success: function (res) {
+                //有重复的文件夹
+                if (res.code == 0) {
+                    $('#folderAlert').show();
+                }
+                else {
+                    $('#addDir').modal('hide');
+                    //刷新UI
+                    getallChildren();
+                }
+            }
+        });
+    });
+
+    //添加文件的确定按钮触发函数
+    $('#completeUpload').click(function () {
+        $('#upFileModal').modal('hide');
+        //清除模态框的能
+        completeAndRemove();
+        getallChildren();
+
+    })
+
+    //点击上传文件
+    $('#upLoadFile').on('click', function () {
+        $('#js-file').off('change').on('change', function (e) {
+            $('#dropbox').addClass('hide');
+            $('#uploadTable').removeClass('hide');
+            var file = e.target.files[0];
+            size2str(file.size, function (num, unit) {
+                createRow(formatName(file.name), num, unit);
+                // changeProcess();
+            });
+            // calculate(file, function(md5) {
+            //     console.log('file', md5);
+            // });
+            checkExist(file, function (res, md5) {
+                //表示没有找到相同的文件
+                if (res.code == 0) {
+                    var t_uuid = uuid();
+                    var filename = t_uuid + file.name.substr(file.name.lastIndexOf('.'));
+                    cos.uploadFile(successCallBack, errorCallBack, progressCallBack, bucket, myFolder + filename, file, 0, taskReady);
+                    //取出文件的信息，保存在临时的全局变量中
+                    tmd5 = md5;
+                    tsize = file.size;
+                    tlocalName = file.name;
+                    tremoteName = filename;
+                    ttypeId = getFileType(tlocalName);
+                    tguid = t_uuid;
+                }
+                //找到相同的文件，并且已经上传至该用户当前的目录
+                else {
+                    console.log('秒传上传成功');
+                    var progress = $('#table-upload-list tr:last .progress-bar');
+                    progress.css('width', 100 + '%').text(100 + '%');
+                    var status = $('#table-upload-list tr:last .upload-status');
+                    status.html('秒传成功')
+
+                }
+
+            });
+            return false;
+        });
+
+        setTimeout(function () {
+            $('#js-file').click();
+        }, 0);
+
+        return false;
+    });
+
+    //拖拽上传文件
+    var dropbox = document.getElementById("dropbox");
+    dropbox.addEventListener("dragenter", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }, false);
+
+    dropbox.addEventListener("dragover", function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    }, false);
+
+    dropbox.addEventListener('drop', function (e) {
+        console.log('drop');
+        e.stopPropagation();
+        e.preventDefault();
+        $('#dropbox').addClass('hide');
+        $('#uploadTable').removeClass('hide');
+        var dt = e.dataTransfer;
+        var file = dt.files[0];
+        size2str(file.size, function (num, unit) {
+            createRow(formatName(file.name), num, unit);
+
+        });
+        checkExist(file, function (res, md5) {
+            //表示没有找到相同的文件
+            if (res.code == 0) {
+                var t_uuid = uuid();
+                var filename = t_uuid + file.name.substr(file.name.lastIndexOf('.'));
+                cos.uploadFile(successCallBack, errorCallBack, progressCallBack, bucket, myFolder + filename, file, 0, taskReady);
+                //取出文件的信息，保存在临时的全局变量中
+                // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                // console.log("PATH",file.getAsDataURL());
+                // path = file.getAsDataURL();
+                tmd5 = md5;
+                tsize = file.size;
+                tlocalName = file.name;
+                tremoteName = filename;
+                ttypeId = getFileType(tlocalName);
+                tguid = t_uuid;
+            }
+            //找到相同的文件，并且已经上传至该用户当前的目录
+            else {
+                console.log('秒传上传成功');
+                var progress = $('#table-upload-list tr:last .progress-bar');
+                progress.css('width', 100 + '%').text(100 + '%');
+                var status = $('#table-upload-list tr:last .upload-status');
+                status.html('秒传成功')
+            }
+
+        })
+    }, false);
+
+    //点击删除文件按钮触发的操作
+    $('#sureDeleteFile').click(function () {
+        checked = new Array();
+        $('.fa-check-square-o').each(function () {
+            checked.push($(this).attr('data-id'));
+        });
+       // console.log(checked);
+    });
+
+    /**
+     * 在删除弹出的模态框中点击确认
+     */
+    $('#sureToDelete').click(function () {
+        // console.log('checked',checked);
+        $.ajax({
+            type:'POST',
+            url:'/files/delete',
+            dataType:'json',
+            data:{
+                files:checked.join(',')
+            },
+            success:function (res) {
+                console.log(res);
+                $('#deleteFile').modal('hide');
+                getallChildren();
+                alertmsg('删除成功');
+            }
+
+        })
+    })
+
+
+
+</script>

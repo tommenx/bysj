@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>VDSK</title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
+    <link rel="stylesheet" href="/stylesheets/font-awesome.min.css"/>
+    <link rel="stylesheet" href="/stylesheets/main.css">
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="index.html" class="navbar-brand"></a>
+        </div>
+        <form class="navbar-form navbar-right">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">搜索</button>
+        </form>
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a href="#">用户名</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="col-sm-2">
+        <div class="list-group side-bar">
+            <a class="list-group-item" href="/">全部文件</a>
+            <a class="list-group-item" href="/img">图片</a>
+            <a class="list-group-item" href="/doc">文档</a>
+            <a class="list-group-item" href="/video">视频</a>
+            <a class="list-group-item" href="/torrent">种子</a>
+            <a class="list-group-item active" href="/music">音乐</a>
+        </div>
+    </div>
+    <div class="col-xs-10">
+        <div class="main-bd">
+            <div class="list-group">
+                <div class="list-group-hd">
+                    <div class="list-group-tit-wrap">
+                        <div class="list-group-tit name">
+                            <span class="tit-con">名称</span>
+                        </div>
+                        <div class="list-group-tit time">
+                            <span class="tit-con">上次修改时间</span>
+                        </div>
+                        <div class="list-group-tit size">
+                            <span class="tit-con">大小</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-bd">
+                    <ul class="list-group" id="list_gr">
+                        <li class="list-group-item file-group">
+                            <div class="item-inner">
+                                <div class="item-tit">
+                                    <div class="thumb">
+                                        <span class="fa fa-square-o fa-2x"></span>
+                                    </div>
+                                    <div class="thumb">
+                                        <span class="fa fa-file fa-2x"></span>
+                                    </div>
+                                    <div class="info">
+                                        <a href="#">文件夹1</a>
+                                    </div>
+                                </div>
+                                <div class="item-info">
+                                    <div class="item-info-list">
+                                        <span class="txt txt-time">2017年10月2日</span>
+                                    </div>
+                                    <div class="item-info-list">
+                                        <span class="txt txt-size">513MB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="javascripts/jquery-3.3.1.min.js"></script>
+<script src="javascripts/bootstrap.min.js"></script>
+<script>
+    $(function () {
+        $.ajax({
+            url:'/music',
+            type:'POST',
+            dataType:'json',
+            success:function (res) {
+                var html = '';
+                for(var i = 0;i < res.length;i ++){
+                    html += '<li class="list-group-item file-group"><div class="item-inner">' +
+                        '<div class="item-tit"><div class="thumb"><span class="fa fa-square-o fa-2x">' +
+                        '</span></div><div class="thumb"><span class="fa fa-file fa-2x"></span></div>' +
+                        '<div class="info"><a href="#" data-url="'+ res[i].F_SourceUrl+'">';
+                    html += res[i].F_ShowName;
+                    html += '</a></div></div><div class="item-info">' +
+                        '<div class="item-info-list"><span class="txt txt-time">';
+                    html += res[i].F_CreateTime;
+                    html += '</span></div><div class="item-info-list"><span class="txt txt-size">'
+                    html += res[i].F_Size;
+                    html += '</span></div></div></div></li>'
+
+                }
+                $('#list_gr').html(html);
+            }
+
+        });
+    });
+</script>
